@@ -1,7 +1,7 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
-const routing = require('./routing');
-const controllers = require('./controllers');
+const routing = require('./routing/routes.js');
+const controllers = require('./controllers/app.controller.js');
 
 // set environment variable port or set 3000 as default
 const PORT = process.env.PORT || 3000;
@@ -10,12 +10,12 @@ const app = express();
 
 // MIDDLEWARE
 
-// make public static
-app.use(express.static('public'));
-
 // handle url encoded data; parse json
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// make public static
+app.use(express.static('public'));
 
 // handlebars
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
