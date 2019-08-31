@@ -3,11 +3,30 @@ const exphbs = require('express-handlebars');
 const routing = require('./routing/routes.js');
 const controllers = require('./controllers/app.controller.js');
 
+// server logging
+const fs = require('fs');
+const morgan = require('morgan');
+const path = require('path');
+const rfs = require('rotating-file-stream');
+
 // set environment variable port or set 3000 as default
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+// npm morgan; create log directory
+const logDirectory = path.join(__dirname, 'log');
+// ensure log directory exists
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+
+// create a rotating write stream
+const accessLogStream = rfs('access.log', {
+    interval: '1d', // rotate daily
+    path: logDirectory
+});
+
+// setup the logger
+app.use(morgan('combined', { stream: accessLogStream }))
 // MIDDLEWARE
 
 // handle url encoded data; parse json
@@ -30,3 +49,5 @@ app.listen(PORT, function () {
     // log (server-side) when server has started
     console.log(`Server listening on: http://localhost:${PORT}`);
 });
+
+
